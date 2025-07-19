@@ -19,9 +19,23 @@ serve(async (req: Request) => {
     return new Response("Method Not Allowed", { status: 405 });
   }
   
-  // 3. Send message every 15 minutes
-  setInterval(async () => {
-  console.log("Sending scheduled messages...");
+// Save user when they interact with bot
+serve(async (req) => {
+  const update = await req.json();
+  const chatId = update.message?.chat.id || update.callback_query?.from.id;
+
+  if (chatId) {
+    await kv.set(["users", chatId.toString()], { addedAt: Date.now() });
+    console.log("Saved chat ID:", chatId);
+  }
+
+  return new Response("ok");
+});
+
+// Send message every 10 seconds
+setInterval(async () => {
+  console.log("🔄 Sending message to all users...");
+
   for await (const entry of kv.list({ prefix: ["users"] })) {
     const chatId = entry.key[1];
 
@@ -30,12 +44,11 @@ serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        text: "⛏️ Test reminder: Flapster Miner is still running. Come mine!",
-        parse_mode: "Markdown",
+        text: "🔔 Test Message: Flapster Miner Reminder!",
       }),
     });
   }
-}, 0.1 * 60 * 1000); // 15 minutes in ms
+}, 10 * 1000); // every 10 seconds
 
   const update = await req.json();
   const message = update.message;
