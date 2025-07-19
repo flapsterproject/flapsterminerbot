@@ -45,12 +45,12 @@ serve(async (req: Request) => {
       "🐤 Start now and become the ultimate miner!"
     ].join("\n");
 
-    await fetch(`${TELEGRAM_API}/sendPhoto`, {
+    await fetch(`${TELEGRAM_API}/sendVideo`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        photo: "https://flapsterminer1-41.vercel.app/loadingmenupost.gif",
+        video: "https://flapsterminer1-41.vercel.app/loadingmenupost.gif",
         caption,
         parse_mode: "Markdown",
         reply_markup: {
