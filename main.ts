@@ -18,6 +18,37 @@ serve(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
+  
+  // 2. Save chat IDs when users interact
+serve(async (req) => {
+  const update = await req.json();
+  const chatId =
+    update.message?.chat.id || update.callback_query?.from.id;
+
+  if (chatId) {
+    await kv.set(["users", chatId.toString()], { addedAt: Date.now() });
+  }
+
+  return new Response("ok");
+});
+
+// 3. Send message every 15 minutes
+setInterval(async () => {
+  console.log("Sending scheduled messages...");
+  for await (const entry of kv.list({ prefix: ["users"] })) {
+    const chatId = entry.key[1];
+
+    await fetch(`${TELEGRAM_API}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: "⛏️ Test reminder: Flapster Miner is still running. Come mine!",
+        parse_mode: "Markdown",
+      }),
+    });
+  }
+}, 0.5 * 60 * 1000); // 15 minutes in ms
 
   const update = await req.json();
   const message = update.message;
