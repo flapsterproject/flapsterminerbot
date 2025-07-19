@@ -72,7 +72,7 @@ serve(async (req: Request) => {
         menu_button: {
           type: "web_app",
           text: "Open",
-          web_app: { url: webAppUrl }
+          web_app: { url: launchUrl }
         }
       })
     });
