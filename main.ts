@@ -19,49 +19,7 @@ serve(async (req: Request) => {
     return new Response("Method Not Allowed", { status: 405 });
   }
   
-// --- 1. Handle Telegram webhook and store chat_id ---
-serve(async (req) => {
-  const update = await req.json();
-  const chatId = update.message?.chat?.id || update.callback_query?.from?.id;
 
-  if (chatId) {
-    await kv.set(["users", chatId.toString()], { addedAt: Date.now() });
-    console.log("User saved:", chatId);
-  }
-
-  return new Response("ok");
-});
-
-// --- 2. Send a message to all users every 10 seconds ---
-const sendLoop = async () => {
-  while (true) {
-    console.log("⏱ Sending message to all users...");
-    for await (const entry of kv.list({ prefix: ["users"] })) {
-      const chatId = entry.key[1];
-      try {
-        const res = await fetch(`${TELEGRAM_API}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: "✅ Flapster Miner Reminder Test!",
-          }),
-        });
-
-        const data = await res.json();
-        if (!data.ok) {
-          console.error("❌ Failed for", chatId, data);
-        }
-      } catch (err) {
-        console.error("Error sending to", chatId, err);
-      }
-    }
-
-    await new Promise((r) => setTimeout(r, 10000)); // Wait 10 seconds
-  }
-};
-
-sendLoop(); // Start the loop
 
   const update = await req.json();
   const message = update.message;
