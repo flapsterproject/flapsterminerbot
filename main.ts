@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 const kv = await Deno.openKv(); // встроенный KV в Deno
 
-const TOKEN = Deno.env.get("7874008229:AAFmGOUxkwOCT6dHEFyrxlju82SYv6010As");
+const TOKEN = "7874008229:AAFmGOUxkwOCT6dHEFyrxlju82SYv6010As";
 const SECRET_PATH = "/FlapsterMiner";
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
 const GAME_URL = "https://flapsterminer1-39.vercel.app";
