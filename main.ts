@@ -45,7 +45,7 @@ serve(async (req: Request) => {
       "🐤 Start now and become the ultimate miner!"
     ].join("\n");
 
-    await fetch(`${TELEGRAM_API}/sendPhoto`, {
+    await fetch(`${TELEGRAM_API}/sendVideo`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
