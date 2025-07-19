@@ -19,36 +19,49 @@ serve(async (req: Request) => {
     return new Response("Method Not Allowed", { status: 405 });
   }
   
-// Save user when they interact with bot
+// --- 1. Handle Telegram webhook and store chat_id ---
 serve(async (req) => {
   const update = await req.json();
-  const chatId = update.message?.chat.id || update.callback_query?.from.id;
+  const chatId = update.message?.chat?.id || update.callback_query?.from?.id;
 
   if (chatId) {
     await kv.set(["users", chatId.toString()], { addedAt: Date.now() });
-    console.log("Saved chat ID:", chatId);
+    console.log("User saved:", chatId);
   }
 
   return new Response("ok");
 });
 
-// Send message every 10 seconds
-setInterval(async () => {
-  console.log("🔄 Sending message to all users...");
+// --- 2. Send a message to all users every 10 seconds ---
+const sendLoop = async () => {
+  while (true) {
+    console.log("⏱ Sending message to all users...");
+    for await (const entry of kv.list({ prefix: ["users"] })) {
+      const chatId = entry.key[1];
+      try {
+        const res = await fetch(`${TELEGRAM_API}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: "✅ Flapster Miner Reminder Test!",
+          }),
+        });
 
-  for await (const entry of kv.list({ prefix: ["users"] })) {
-    const chatId = entry.key[1];
+        const data = await res.json();
+        if (!data.ok) {
+          console.error("❌ Failed for", chatId, data);
+        }
+      } catch (err) {
+        console.error("Error sending to", chatId, err);
+      }
+    }
 
-    await fetch(`${TELEGRAM_API}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: "🔔 Test Message: Flapster Miner Reminder!",
-      }),
-    });
+    await new Promise((r) => setTimeout(r, 10000)); // Wait 10 seconds
   }
-}, 10 * 1000); // every 10 seconds
+};
+
+sendLoop(); // Start the loop
 
   const update = await req.json();
   const message = update.message;
