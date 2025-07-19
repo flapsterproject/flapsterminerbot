@@ -50,7 +50,7 @@ serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        photo: "https://flapsterminer1-40.vercel.app/loadingmenuvideo.gif",
+        photo: "https://flapsterminer1-40.vercel.app/loadingmenupost.gif",
         caption,
         parse_mode: "Markdown",
         reply_markup: {
