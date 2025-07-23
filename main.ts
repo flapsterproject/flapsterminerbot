@@ -7,7 +7,7 @@ const kv = await Deno.openKv(); // встроенный KV в Deno
 const TOKEN = Deno.env.get("BOT_TOKEN");
 const SECRET_PATH = "/FlapsterMinerBot";
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
-const GAME_URL = "https://flapsterminer1-41.vercel.app/";
+const GAME_URL = "https://t.me/FlapsterMiner_bot";
 
 serve(async (req: Request) => {
   const { pathname } = new URL(req.url);
