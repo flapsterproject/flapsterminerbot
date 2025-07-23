@@ -32,7 +32,7 @@ serve(async (req: Request) => {
       await kv.set(["ref", chatId], startParam);
     }
 
-    const launchUrl = `https://t.me/FlapsterMinerBot?startapp=${startParam}`;
+    const launchUrl = `https://t.me/FlapsterMiner_bot?startapp=${startParam}`;
     const caption = [
       "👋 Join Flapster Miner and start earning! ⛏️💎",
       "",
