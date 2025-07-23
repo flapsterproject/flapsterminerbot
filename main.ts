@@ -7,7 +7,7 @@ const kv = await Deno.openKv(); // встроенный KV в Deno
 const TOKEN = Deno.env.get("BOT_TOKEN");
 const SECRET_PATH = "/FlapsterMinerBot";
 const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
-const GAME_URL = "https://flapsterminer1-41.vercel.app/";
+const GAME_URL = "https://flapsterminer1-42.vercel.app/";
 
 serve(async (req: Request) => {
   const { pathname } = new URL(req.url);
@@ -50,7 +50,7 @@ serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        video: "https://flapsterminer1-41.vercel.app/loadingmenuvideo.mp4",
+        video: "https://flapsterminer1-42.vercel.app/loadingmenuvideo.mp4",
         caption,
         parse_mode: "Markdown",
         reply_markup: {
